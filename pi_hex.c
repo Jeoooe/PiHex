@@ -7,6 +7,9 @@ typedef unsigned int uint32_t;
 typedef long long int64_t;
 typedef unsigned long long uint64_t;
 
+int pi_digit[10000];
+int tail = 0;
+
 // 16^n mod m
 uint64_t pow_mod(uint64_t n, uint64_t m) {
     // 这里的base是可能溢出的
@@ -33,9 +36,6 @@ int64_t sigma(int n) {
             uint64_t numerator = pow_mod(n - i, denominator);
             numerator = hex_lsh(numerator, MORE);
             results[j] += numerator / denominator;
-#ifdef DEBUG
-            printf("%d : %lld\n",i, result);
-#endif
         }
     }
 
@@ -45,9 +45,6 @@ int64_t sigma(int n) {
             const uint64_t denominator = 8 * i + p;
             uint64_t numerator = hex_lsh(1, end - i);
             results[j] += (numerator / denominator);
-#ifdef DEBUG
-            printf("%d : %lld\n",i, result);
-#endif
         }
     }
     int64_t result = 4 * (int64_t)results[0] - 2 * (int64_t) results[1] - (int64_t) results[2] - (int64_t) results[3];
@@ -64,22 +61,36 @@ void run(int n) {
     while (pi > digit) {
         pi -= digit ;
     }
-#ifdef DEBUG
-    printf("\n\nNOW:%d\n",n);
-    printf("pI:%lld\n",pi);
-#endif
-    printf("%d ditgit: %x --- %x\n",n+1,(int)(pi >> (4*MORE-4)) & 0b1111,(int)pi);
+    // printf("%d ditgit: %x --- %x\n",n+1,(int)(pi >> (4*MORE-4)) & 0b1111,(int)pi);
+    pi_digit[tail] = (int)(pi >> (4*MORE-4)) & 0b1111;
+    ++tail;
 }
 
-
 int main() {
-    int start, end;
+    int start, end; // From (start + 1) to (end + 1)
     printf("start=");
     scanf_s("%d",&start);
     printf("end=");
     scanf_s("%d",&end);
+
+    --start;
+    --end;
+
     for (int i = start;i <= end; ++i) {
         run(i);
     }
+
+    FILE *file;
+    errno_t err;
+    err = fopen_s(&file, "./build/output.txt", "w");
+    if (err == 0) {
+        for (int i = 0;i < tail; ++i) {
+            fprintf(file,"%x", pi_digit[i]);
+        }
+    } else {
+        printf("Error opening file");
+    }
+
+    fclose(file);
     return 0;
 }
