@@ -12,7 +12,7 @@ int tail = 0;
 
 // 16^n mod m
 uint64_t pow_mod(uint64_t n, uint64_t m) {
-    // 这里的base是可能溢出的
+    //base might overflow
     uint64_t base = 16 % m;
     uint64_t result = 1;
     while (n > 0) {
@@ -47,22 +47,23 @@ int64_t sigma(int n) {
             results[j] += (numerator / denominator);
         }
     }
+
+    const int64_t digit = hex_lsh(1, MORE);
     int64_t result = 4 * (int64_t)results[0] - 2 * (int64_t) results[1] - (int64_t) results[2] - (int64_t) results[3];
+    while (result < 0) {
+        result += digit;
+    }
+    while (result > digit) {
+        result -= digit ;
+    }
     return result;
 }
 
 //calculate n th digit of pi
 void run(int n) {
-    const int64_t digit = hex_lsh(1, MORE);
     int64_t pi = sigma(n);
-    while (pi < 0) {
-        pi += digit;
-    }
-    while (pi > digit) {
-        pi -= digit ;
-    }
     // printf("%d ditgit: %x --- %x\n",n+1,(int)(pi >> (4*MORE-4)) & 0b1111,(int)pi);
-    pi_digit[tail] = (int)(pi >> (4*MORE-4)) & 0b1111;
+    pi_digit[tail] = (int)(pi >> (4*MORE-4));
     ++tail;
 }
 
