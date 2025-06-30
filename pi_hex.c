@@ -1,5 +1,7 @@
 #include <stdio.h>
 
+#define OUTPUT_FILE "./output/pi_hex.txt"
+
 #define MORE 8 
 #define hex_lsh(x, n) ((int64_t)(x) << (4*(n)))
 
@@ -67,12 +69,18 @@ void run(int n) {
     ++tail;
 }
 
-int main() {
+int main(int arc, char *argv[]) {
     int start, end; // From (start + 1) to (end + 1)
-    printf("start=");
-    scanf_s("%d",&start);
-    printf("end=");
-    scanf_s("%d",&end);
+
+	if (arc == 3) {
+		sscanf(argv[1], "%d", &start);
+		sscanf(argv[2], "%d", &end);
+	} else {
+		printf("start=");
+		scanf("%d",&start);
+		printf("end=");
+		scanf("%d",&end);
+	}
 
     --start;
     --end;
@@ -81,10 +89,8 @@ int main() {
         run(i);
     }
 
-    FILE *file;
-    errno_t err;
-    err = fopen_s(&file, "./build/output.txt", "w");
-    if (err == 0) {
+    FILE *file = fopen(OUTPUT_FILE, "w");
+    if (file) {
         for (int i = 0;i < tail; ++i) {
             fprintf(file,"%x", pi_digit[i]);
         }

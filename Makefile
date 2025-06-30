@@ -1,2 +1,8 @@
-./build/pi_hex.exe: ./pi_hex.c
-	gcc -o ./build/pi_hex -Wall -Werror ./pi_hex.c 
+TARGET = ./build/pi_hex.out
+
+ifeq ($(OS), Windows_NT)
+	TARGET := ./build/pi_hex.exe
+endif
+
+$(TARGET): ./pi_hex.c
+	$(CC) -o $@ $^ 
