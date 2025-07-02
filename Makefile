@@ -1,4 +1,4 @@
-TARGET = ./build/pi_hex.out
+TARGET = ./build/pi_hex
 
 ifeq ($(OS), Windows_NT)
 	TARGET := ./build/pi_hex.exe
